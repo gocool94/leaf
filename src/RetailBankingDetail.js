@@ -1,25 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import React, { useEffect, useState } from "react";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import Modal from "./Modal";
-import "./RetailBankingDetail.css";
 import kpiData from "./kpi_output.json"; // Import the JSON file
 import { FaHome } from "react-icons/fa";
+import "./RetailBankingDetail.css";
 
-const RetailBankingDetail = () => {
+const RetailBanking = () => {
   const { industry } = useParams(); // Capture the dynamic industry from the URL
   const location = useLocation(); // Capture the state passed from search results
+  const navigate = useNavigate(); // For navigation to detail pages
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
-  const [loading, setLoading] = useState(false); // State to manage loading
   const [sections, setSections] = useState([]); // State to hold the sections data
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null); // Track the selected subcategory
+  const [industryDefinition, setIndustryDefinition] = useState(""); // Track the industry definition
 
   // Normalize the industry parameter and filter the corresponding data from kpiData
   const normalizedIndustry = industry
     .toLowerCase()
     .replace(/\s+/g, "-")
     .replace(/&/g, "-");
+
+  // Function to format industry name for display
+  const formatIndustryTitle = (normalizedName) => {
+    return normalizedName
+      .replace(/-/g, " ") // Replace hyphens with spaces
+      .replace(/\band\b/g, "&"); // Optionally replace 'and' with '&'
+  };
 
   useEffect(() => {
     const industryData = kpiData.flatMap((domainData) =>
@@ -34,18 +41,25 @@ const RetailBankingDetail = () => {
 
     if (industryData.length === 0) {
       setSections([]);
+      setIndustryDefinition(""); // Clear the definition if no data found
       return;
     }
 
-    const newSections = industryData[0].classifications.map(
+    const industryInfo = industryData[0];
+    setIndustryDefinition(industryInfo.industry_definition); // Set the industry definition
+
+    const newSections = industryInfo.classifications.map(
       (classification) => ({
         name: classification.classification,
+        definition: classification.classification_definition, // Add classification definition
         categories: classification.departments.map((department) => ({
           name: department.department,
+          definition: department.department_definition, // Add department definition
           topics: department.subdepartments.map((subdepartment) => ({
             name: subdepartment.subdepartment,
+            definition: subdepartment.subdepartment_definition, // Add subdepartment definition
             kpis: subdepartment.kpicollection,
-            useCases: subdepartment.usecases || [],
+            useCases: subdepartment.usecases_classifications || [], // Updated for classifications
           })),
         })),
       })
@@ -78,41 +92,24 @@ const RetailBankingDetail = () => {
     }
   }, [normalizedIndustry, location.state]); // Dependencies to rerun the effect
 
-  // Export to PDF function
-  const exportToPDF = async () => {
-    setLoading(true);
-    const input = document.getElementById("pdf-content");
-
-    try {
-      const canvas = await html2canvas(input, {
-        scale: 1,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-      pdf.save(`${industry}.pdf`);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleTopicClick = (section, category, topic) => {
     setModalContent({
       section,
       category,
       topic,
-      useCases: topic.useCases,
     });
+    setSelectedSubcategory(topic.name); // Set selected subcategory
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedSubcategory(null); // Reset selected subcategory on modal close
+  };
+
+  const goToDetailPage = (topicName) => {
+    const normalizedSubcategory = topicName.toLowerCase().replace(/\s+/g, "-");
+    navigate(`/detail/${normalizedIndustry}/${normalizedSubcategory}`);
   };
 
   return (
@@ -121,29 +118,44 @@ const RetailBankingDetail = () => {
         <Link to="/" className="home-button">
           <FaHome />
         </Link>
-        <h1 className="title">{industry}</h1>
-        <button className="export-button" onClick={exportToPDF}>
-          Export to PDF
-        </button>
+        {/* Display the formatted title with a hover tooltip showing the industry definition */}
+        <h1
+          className="title"
+          title={industryDefinition || "Industry description not available"}
+        >
+          {formatIndustryTitle(industry)}
+        </h1>
       </div>
-      {loading && <div className="loading">Generating PDF...</div>}
-      <div id="pdf-content">
+
+      <div className="content">
         {sections.length > 0 ? (
           sections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="section">
-              <h2>{section.name}</h2>
+              {/* Display tooltip for the classification */}
+              <h2 title={section.definition || "Classification description not available"}>
+                {section.name}
+              </h2>
               <div className="categories">
                 {section.categories.map((category, categoryIdx) => (
                   <div key={categoryIdx} className="category">
-                    <h3>{category.name}</h3>
+                    {/* Display tooltip for the department */}
+                    <h3 title={category.definition || "Department description not available"}>
+                      {category.name}
+                    </h3>
                     <div className="topics">
                       {category.topics.map((topic, topicIdx) => (
                         <button
                           key={topicIdx}
-                          className="topic-button"
-                          onClick={() =>
-                            handleTopicClick(section.name, category.name, topic)
-                          }
+                          className={`topic-button ${
+                            selectedSubcategory === topic.name
+                              ? "highlighted"
+                              : ""
+                          }`} // Apply a highlighted class if selected
+                          onClick={() => {
+                            console.log(`Clicked on topic: ${topic.name}`); // Debugging log
+                            handleTopicClick(section.name, category.name, topic);
+                          }}
+                          title={topic.definition || "Subdepartment description not available"} // Tooltip for subdepartment
                         >
                           {topic.name}
                         </button>
@@ -158,15 +170,23 @@ const RetailBankingDetail = () => {
           <p>No data available for {industry}.</p>
         )}
       </div>
+
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           content={modalContent}
-        />
+        >
+          <button
+            className="go-to-detail-button"
+            onClick={() => goToDetailPage(modalContent.topic.name)}
+          >
+            Go to Detail Page
+          </button>
+        </Modal>
       )}
     </div>
   );
 };
 
-export default RetailBankingDetail;
+export default RetailBanking;

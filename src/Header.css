@@ -189,3 +189,38 @@
     max-height: 150px; /* Adjust height for smaller screens */
   }
 }
+
+.header {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.hinge-icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.5rem; /* Adjust size as needed */
+  background-color: transparent; /* Optional */
+  border: none; /* Optional */
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Hidden off-screen */
+  width: 250px;
+  height: 100%;
+  transition: left 0.3s ease;
+  background-color: white; /* Sidebar color */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* Ensure it is above other content */
+}
+
+.sidebar.open {
+  left: 0; /* Slide in when open */
+}
+
+/* Add any other sidebar styles as needed */

@@ -5,9 +5,9 @@
 .category-title {
   background: linear-gradient(
     90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 94, 121, 1) 54%,
-    rgba(0, 212, 255, 1) 100%
+    rgba(0, 128, 128, 1) 0%,
+    rgba(0, 176, 255, 1) 54%,
+    rgba(0, 255, 196, 1) 100%
   );
   padding: 15px;
   font-size: 28px;
@@ -22,36 +22,39 @@
 }
 
 .category-title:hover {
-  background-color: rgba(9, 94, 121, 0.85); /* Darken the background on hover */
+  background-color: rgba(
+    0,
+    176,
+    255,
+    0.85
+  ); /* Darken the background on hover */
 }
 
 .subcategories {
+  display: flex; /* Use flexbox to arrange items inline */
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  gap: 10px; /* Space between items */
   padding: 10px;
-  background-color: #f7f7f7;
+  background-color: #f7f7f7; /* Background color for the subcategories */
 }
 
 .subcat-button {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  text-align: left;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #e9ecef;
+  padding: 8px 12px; /* Adjust padding for better appearance */
+  background-color: #4caf50; /* Updated to green */
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-  position: relative;
-  cursor: pointer;
+  border-radius: 6px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+  cursor: pointer; /* Change cursor to pointer on hover */
 }
 
 .subcat-button:hover {
-  background-color: #ced4da;
+  background-color: #43a047; /* Darken green on hover */
 }
 
 .subcat-button .icon {
   margin-right: 10px;
-  color: #bd8f8f;
+  color: #ffffff; /* White icons */
 }
 
 .tooltip {
@@ -80,7 +83,7 @@ button {
 }
 
 .sub-option-button {
-  background: rgb(200, 209, 200);
+  background: rgb(135, 206, 250); /* Updated to light blue */
   padding: 10px;
   border: none;
   cursor: pointer;
@@ -89,6 +92,6 @@ button {
 }
 
 .sub-option-button.selected {
-  background: rgb(105, 175, 105);
+  background: rgb(30, 144, 255); /* Dark blue when selected */
   color: white;
 }
