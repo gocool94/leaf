@@ -15,9 +15,9 @@ const Modal = ({ isOpen, onClose, content }) => {
     if (isOpen) {
       if (activeTab === "Use Cases" && classificationOptions.length > 0) {
         setSelectedClassification(classificationOptions[0]);
-        setSelectedUseCase(null); // Reset use case when classification changes
+        setSelectedUseCase(classificationOptions[0].usecases_collection[0] || null); // Select the first use case if available
       } else if (activeTab === "KPI's" && kpiOptions.length > 0) {
-        setSelectedUseCase(kpiOptions[0]);
+        setSelectedUseCase(kpiOptions[0]); // Select the first KPI by default
       }
     }
   }, [isOpen, activeTab, kpiOptions, classificationOptions]);
@@ -63,7 +63,6 @@ const Modal = ({ isOpen, onClose, content }) => {
         </div>
 
         <div className="max-h-96 overflow-y-auto mb-4">
-          {/* Render KPI or Use Case options */}
           {activeTab === "Use Cases" ? (
             <>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -77,7 +76,7 @@ const Modal = ({ isOpen, onClose, content }) => {
                     } text-sm transition`}
                     onClick={() => {
                       setSelectedClassification(classification);
-                      setSelectedUseCase(null); // Reset selected use case when classification changes
+                      setSelectedUseCase(classification.usecases_collection[0] || null); // Select the first use case by default
                     }}
                   >
                     {classification.classification}
@@ -98,26 +97,31 @@ const Modal = ({ isOpen, onClose, content }) => {
                       } text-sm transition`}
                       onClick={() => setSelectedUseCase(useCase)}
                     >
-                      {useCase.definition}
+                      {useCase.name}
                     </button>
                   ))}
                 </div>
               )}
 
-              {/* Display selected Use Case details */}
+              {/* Display selected Use Case details in a structured layout with borders */}
               {selectedUseCase && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {selectedUseCase.definition}
-                  </h3>
-                  <p>
-                    <strong>Description:</strong>{" "}
-                    {selectedUseCase.description || "No description available."}
-                  </p>
-                  <p>
-                    <strong>Business Impact:</strong>{" "}
-                    {selectedUseCase.business_impact || "No business impact available."}
-                  </p>
+                <div className="mt-4 border border-gray-300 rounded-lg">
+                  {/* Business Impact in a single row */}
+                  <div className="grid grid-cols-1 p-4 border-b border-gray-300 bg-gray-50">
+                    <p className="font-semibold text-indigo-600">Business Impact:</p>
+                    <p className="text-gray-700">{selectedUseCase.business_impact || "No business impact available."}</p>
+                  </div>
+                  {/* Definition and Description side-by-side */}
+                  <div className="grid grid-cols-2 gap-4 p-4">
+                    <div className="border-r border-gray-300 pr-4">
+                      <p className="font-semibold text-indigo-600">Definition:</p>
+                      <p className="text-gray-700">{selectedUseCase.definition || "No definition available."}</p>
+                    </div>
+                    <div className="pl-4">
+                      <p className="font-semibold text-indigo-600">Description:</p>
+                      <p className="text-gray-700">{selectedUseCase.description || "No description available."}</p>
+                    </div>
+                  </div>
                 </div>
               )}
             </>

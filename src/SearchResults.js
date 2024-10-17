@@ -35,7 +35,7 @@ const SearchResults = () => {
                             if (kpi.kpi && kpi.kpi.toLowerCase().includes(searchQuery.toLowerCase())) {
                               matchedKPIs.push({
                                 ...kpi,
-                                subdepartment: subdepartment.subdepartment
+                                subdepartment: subdepartment.subdepartment,
                               });
                             }
                           });
@@ -47,11 +47,11 @@ const SearchResults = () => {
                             if (usecaseClass.usecases_collection && Array.isArray(usecaseClass.usecases_collection)) {
                               usecaseClass.usecases_collection.forEach((usecaseObj) => {
                                 // Ensure the usecase object has a usecase property
-                                if (usecaseObj.definition && usecaseObj.definition.toLowerCase().includes(searchQuery.toLowerCase())) {
+                                if (usecaseObj.name && usecaseObj.name.toLowerCase().includes(searchQuery.toLowerCase())) {
                                   matchedUseCases.push({
                                     ...usecaseObj,
                                     subdepartment: subdepartment.subdepartment,
-                                    classification: usecaseClass.classification
+                                    classification: usecaseClass.classification,
                                   });
                                 }
                               });
@@ -165,7 +165,7 @@ const SearchResults = () => {
                             className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 shadow-sm transition-colors duration-300 whitespace-nowrap"
                             onClick={() => handleItemClick(usecaseObj, industry.industry)}
                           >
-                            {usecaseObj.definition} {/* Update this line for display */}
+                            {usecaseObj.name} {/* Use 'name' property for display */}
                           </button>
                         ))}
                       </div>
@@ -208,7 +208,7 @@ const SearchResults = () => {
             className="modal-content bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-2xl font-bold mb-4">{selectedItem.kpi || selectedItem.definition}</h2>
+            <h2 className="text-2xl font-bold mb-4">{selectedItem.name || selectedItem.kpi}</h2> {/* Updated display */}
             {typeof selectedItem === "object" ? (
               <>
                 {selectedItem.kpi ? (
