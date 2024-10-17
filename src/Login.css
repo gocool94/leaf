@@ -1,42 +1,63 @@
-.app-container {
+/* Login.css */
+
+body {
+  margin: 0;
+  padding: 0;
   display: flex;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #f7f7f7;
-  padding: 20px;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-
-.topics-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.topic-item {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
-  margin: 5px 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.3s ease;
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #f5f7fa,
+    #c3cfe2
+  ); /* Add a stylish linear gradient */
+  font-family: "Arial", sans-serif;
 }
 
-.topic-item:hover {
-  background: #f0f0f0;
+.login-container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: white; /* White background for the login box */
+  max-width: 400px;
+  width: 100%;
 }
 
-.topic-icon {
-  margin-right: 10px;
-  font-size: 20px;
+.login-header h1 {
+  color: #333; /* Dark color for the heading */
+  margin-bottom: 10px;
+}
+
+.login-header p {
+  color: #777; /* Lighter color for the description */
+  margin-bottom: 20px;
+}
+
+.google-login-button {
+  display: flex;
+  justify-content: center;
+}
+
+.google-login-button .google-button {
+  background-color: #4285f4; /* Google blue color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.google-login-button .google-button:hover {
+  background-color: #357ae8; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slightly lift the button */
+}
+
+.google-login-button .google-button:active {
+  transform: translateY(0); /* Return to normal when clicked */
 }
 
 /* App.css */
@@ -82,7 +103,7 @@
 
 .google-login-button .google-button {
   background-color: #4285f4; /* Google blue color */
-  color: rgb(143, 205, 122);
+  color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;

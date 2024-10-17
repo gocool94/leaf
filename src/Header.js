@@ -4,10 +4,11 @@ import "./Header.css";
 import headerImage from "./header.png"; // Adjust the path as needed
 import kpiData from "./kpi_output.json"; // Import the JSON file
 
-const Header = () => {
+const Header = ({ userEmail }) => {
+  // Accept userEmail as a prop
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]); // State for suggestions
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -19,11 +20,10 @@ const Header = () => {
     setSearchQuery(query);
 
     if (query.trim()) {
-      // Filter suggestions based on the search query
       const filteredSuggestions = getSuggestions(query);
       setSuggestions(filteredSuggestions);
     } else {
-      setSuggestions([]); // Clear suggestions if input is empty
+      setSuggestions([]);
     }
   };
 
@@ -31,7 +31,6 @@ const Header = () => {
     const lowercasedQuery = query.toLowerCase();
     const results = [];
 
-    // Search logic: check each domain and industry for matches
     kpiData.forEach((domain) => {
       domain.industries.forEach((industry) => {
         if (industry.industry.toLowerCase().includes(lowercasedQuery)) {
@@ -61,7 +60,6 @@ const Header = () => {
       });
     });
 
-    // Remove duplicates and return
     return [...new Set(results)];
   };
 
@@ -69,18 +67,17 @@ const Header = () => {
     if (event.key === "Enter") {
       if (searchQuery.trim()) {
         navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-        setSuggestions([]); // Clear suggestions on search
+        setSuggestions([]);
       }
     }
   };
 
   const handleSuggestionClick = (suggestion) => {
     navigate(`/search?query=${encodeURIComponent(suggestion)}`);
-    setSearchQuery(suggestion); // Set search query to the clicked suggestion
-    setSuggestions([]); // Clear suggestions on click
+    setSearchQuery(suggestion);
+    setSuggestions([]);
   };
 
-  // Aggregate industries by domain
   const aggregateData = (data) => {
     const aggregated = {};
 
@@ -97,7 +94,7 @@ const Header = () => {
     }));
   };
 
-  const categories = aggregateData(kpiData); // Aggregate domains and industries
+  const categories = aggregateData(kpiData);
 
   return (
     <header className="header">
@@ -117,10 +114,10 @@ const Header = () => {
           placeholder="Search..."
           className="search-bar"
           value={searchQuery}
-          onChange={handleInputChange} // Handle input change
+          onChange={handleInputChange}
           onKeyPress={handleKeyPress}
         />
-        {suggestions.length > 0 && ( // Display suggestions if there are any
+        {suggestions.length > 0 && (
           <ul className="suggestions-list">
             {suggestions.map((suggestion, index) => (
               <li
@@ -134,6 +131,7 @@ const Header = () => {
           </ul>
         )}
       </div>
+      <div className="user-email">{userEmail}</div> {/* Display user email */}
       <nav className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <button
           className="close-btn"

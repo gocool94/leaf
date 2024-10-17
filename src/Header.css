@@ -223,4 +223,14 @@
   left: 0; /* Slide in when open */
 }
 
+.user-email {
+  position: absolute; /* Make it position relative to header */
+  right: 20px; /* Adjust as needed for spacing */
+  top: 20px; /* Adjust as needed for spacing */
+  color: rgb(109, 180, 85); /* Change color to match your design */
+  font-size: 1rem; /* Adjust size as needed */
+  font-weight: bold; /* Make the font bold */
+  text-shadow: 1px 1px 2px rgba(240, 229, 229, 0.5); /* Optional: Add a subtle shadow */
+}
+
 /* Add any other sidebar styles as needed */
