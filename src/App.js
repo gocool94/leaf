@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import Sidebar from "./Sidebar";
 import TopicsList from "./TopicsList";
 import RetailBankingDetail from "./RetailBankingDetail";
@@ -31,7 +30,9 @@ const allowedEmails = [
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState(""); // New state for the user's name
+  const [userName, setUserName] = useState(""); // State for the user's name
+  const [password, setPassword] = useState(""); // State for the password
+  const [loginError, setLoginError] = useState(""); // State for login error messages
 
   useEffect(() => {
     const email = localStorage.getItem("user_email");
@@ -43,63 +44,78 @@ function App() {
     }
   }, []);
 
-  // Handle Google Sign-In success
-  const handleLoginSuccess = (credentialResponse) => {
-    const token = credentialResponse.credential; // Get the JWT token from the response
-    const payload = JSON.parse(atob(token.split(".")[1])); // Decode the payload part of the token
-
-    const email = payload.email; // Extract the email from the token's payload
-    const name = payload.name; // Extract the name from the token's payload
-
-    if (allowedEmails.includes(email)) {
-      localStorage.setItem("user_email", email); // Store email in localStorage
-      localStorage.setItem("user_name", name); // Store name in localStorage
-      setUserEmail(email);
-      setUserName(name); // Set the name
+  // Handle login form submission
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (allowedEmails.includes(userEmail) && password === "kipi123") {
+      localStorage.setItem("user_email", userEmail); // Store email in localStorage
+      localStorage.setItem("user_name", userName); // Store name in localStorage
       setIsAuthenticated(true);
+      setLoginError(""); // Clear any previous errors
     } else {
-      alert("Unauthorized email");
+      setLoginError("Invalid email or password");
     }
   };
 
-  // Handle Google Sign-In failure
-  const handleLoginFailure = () => {
-    alert("Login failed. Please try again.");
+  const handleEmailChange = (e) => {
+    setUserEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   return (
-    <GoogleOAuthProvider clientId="503155085709-6s7ip7t1950g3494ra9u5llq5q8jkg9d.apps.googleusercontent.com">
-      <Router>
-        <div className="app">
-          {isAuthenticated && <Header userName={userName} />}{" "}
-          {/* Pass userName to Header */}
-          <div className="app-container">
-            {isAuthenticated ? (
-              <Routes>
-                <Route path="/" element={<TopicsList />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/upload" element={<FileUploader />} />
-                <Route path="/:industry" element={<RetailBankingDetail />} />
-              </Routes>
-            ) : (
-              <div className="login-page">
-                <div className="login-box">
-                  <h2>Welcome, please sign in</h2>
-                  <p>Sign in with your Google account to proceed</p>
-                  <div className="google-login-button">
-                    <GoogleLogin
-                      onSuccess={handleLoginSuccess}
-                      onError={handleLoginFailure}
-                      useOneTap
+    <Router>
+      <div className="app">
+        {isAuthenticated && <Header userName={userName} />}{" "}
+        {/* Pass userName to Header */}
+        <div className="app-container">
+          {isAuthenticated ? (
+            <Routes>
+              <Route path="/" element={<TopicsList />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/upload" element={<FileUploader />} />
+              <Route path="/:industry" element={<RetailBankingDetail />} />
+            </Routes>
+          ) : (
+            <div className="login-page">
+              <div className="login-box">
+                <h2 className="typing-effect">Sign in - LEAF Initiative</h2>
+                <form onSubmit={handleLogin}>
+                  <div className="form-group">
+                    <label htmlFor="email">Email:</label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={userEmail}
+                      onChange={handleEmailChange}
+                      required
+                      placeholder="Enter your email"
                     />
                   </div>
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Password:</label>
+                    <input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={handlePasswordChange}
+                      required
+                      placeholder="Enter your password"
+                    />
+                  </div>
+                  {loginError && <p className="error-message">{loginError}</p>}
+                  <button type="submit" className="login-button">
+                    Login
+                  </button>
+                </form>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      </Router>
-    </GoogleOAuthProvider>
+      </div>
+    </Router>
   );
 }
 

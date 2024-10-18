@@ -164,18 +164,15 @@ const Header = ({ userName }) => {
           </ul>
         )}
       </div>
-      <div className="user-dropdown">
-        <div onClick={toggleDropdown} className="user-name">
-          {userName}
-        </div>
-        {isDropdownOpen && (
-          <div className="dropdown-content">
-            <button className="logout-button" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        )}
+
+      {/* User Info Section */}
+      <div className="user-info">
+        <div className="user-email">{localStorage.getItem("user_email")}</div>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
+
       <nav
         className={`sidebar ${isSidebarOpen ? "open" : ""}`}
         ref={sidebarRef}
@@ -192,8 +189,6 @@ const Header = ({ userName }) => {
             <div key={category.domain} className="category-box">
               <h2 className="category-heading">{category.domain}</h2>
               <div className="domain-box">
-                {" "}
-                {/* New box for domains */}
                 <ul className="subcategory-list">
                   {category.industries.map((subcategory, index) => (
                     <li key={index} className="subcategory-item">
