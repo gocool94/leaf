@@ -1,46 +1,6 @@
-.app-container {
-  display: flex;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #f7f7f7;
-  padding: 20px;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-
-.topics-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.topic-item {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  margin: 5px 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.3s ease;
-}
-
-.topic-item:hover {
-  background: #f0f0f0;
-}
-
-.topic-icon {
-  margin-right: 10px;
-  font-size: 20px;
-}
-
 /* App.css */
 
+/* Login page styling */
 .login-page {
   display: flex;
   justify-content: center; /* Center horizontally */
@@ -53,49 +13,57 @@
   ); /* Stylish background gradient */
 }
 
+/* Login box styling */
 .login-box {
   text-align: center;
-  padding: 20px;
+  padding: 30px; /* Increased padding for a more spacious look */
   border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow for depth */
   background-color: white; /* White background for the login box */
-  max-width: 400px;
-  width: 100%;
+  max-width: 400px; /* Limit the maximum width */
+  width: 100%; /* Full width for responsiveness */
 }
 
-.login-box h2 {
-  color: #333; /* Dark color for the heading */
-  margin-bottom: 10px;
-}
-
-.login-box p {
-  color: #777; /* Lighter color for the description */
-  margin-bottom: 20px;
-}
-
-/* Optional: Style the Google Login button */
+/* Centering the Google login button */
 .google-login-button {
   display: flex;
-  justify-content: center;
-  width: 100%; /* Full width for the button */
+  justify-content: center; /* Center the button */
+  margin-top: 20px; /* Add margin for spacing */
 }
 
+/* Button styling */
 .google-login-button .google-button {
   background-color: #4285f4; /* Google blue color */
-  color: rgb(143, 205, 122);
+  color: white; /* Changed text color for better contrast */
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 12px 20px; /* Increased padding for better clickability */
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
 }
 
+/* Button hover effect */
 .google-login-button .google-button:hover {
   background-color: #357ae8; /* Darker blue on hover */
   transform: translateY(-2px); /* Slightly lift the button */
 }
 
+/* Button active effect */
 .google-login-button .google-button:active {
   transform: translateY(0); /* Return to normal when clicked */
+}
+
+/* Heading styling for login box */
+.login-box h2 {
+  color: #333; /* Dark color for the heading */
+  margin-bottom: 15px; /* Increased margin for better spacing */
+  font-size: 24px; /* Increased font size for better visibility */
+}
+
+/* Description styling for login box */
+.login-box p {
+  color: #777; /* Lighter color for the description */
+  margin-bottom: 20px;
+  font-size: 16px; /* Slightly larger font size */
 }

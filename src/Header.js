@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import headerImage from "./header.png"; // Adjust the path as needed
 import kpiData from "./kpi_output.json"; // Import the JSON file
 
-const Header = ({ userEmail }) => {
-  // Accept userEmail as a prop
+const Header = ({ userName }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const sidebarRef = useRef(null); // Ref for sidebar
+  const toggleButtonRef = useRef(null); // Ref for toggle button
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -78,6 +80,17 @@ const Header = ({ userEmail }) => {
     setSuggestions([]);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user_email"); // Remove user email from localStorage
+    localStorage.removeItem("user_name"); // Remove user name from localStorage
+    navigate("/"); // Navigate to the login page or home page
+    window.location.reload(); // Optionally, refresh the page to ensure the logout state
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   const aggregateData = (data) => {
     const aggregated = {};
 
@@ -96,12 +109,32 @@ const Header = ({ userEmail }) => {
 
   const categories = aggregateData(kpiData);
 
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target)
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarRef, toggleButtonRef]);
+
   return (
     <header className="header">
       <div
         className="snowflake-icon"
         onClick={toggleSidebar}
         aria-expanded={isSidebarOpen}
+        ref={toggleButtonRef} // Attach ref to toggle button
       >
         ❄️
       </div>
@@ -131,8 +164,22 @@ const Header = ({ userEmail }) => {
           </ul>
         )}
       </div>
-      <div className="user-email">{userEmail}</div> {/* Display user email */}
-      <nav className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+      <div className="user-dropdown">
+        <div onClick={toggleDropdown} className="user-name">
+          {userName}
+        </div>
+        {isDropdownOpen && (
+          <div className="dropdown-content">
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+      <nav
+        className={`sidebar ${isSidebarOpen ? "open" : ""}`}
+        ref={sidebarRef}
+      >
         <button
           className="close-btn"
           onClick={toggleSidebar}
@@ -144,21 +191,25 @@ const Header = ({ userEmail }) => {
           {categories.map((category) => (
             <div key={category.domain} className="category-box">
               <h2 className="category-heading">{category.domain}</h2>
-              <ul className="subcategory-list">
-                {category.industries.map((subcategory, index) => (
-                  <li key={index} className="subcategory-item">
-                    <Link
-                      to={`/${subcategory.industry
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")}`}
-                    >
-                      <button className="subcategory-button">
-                        {subcategory.industry}
-                      </button>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <div className="domain-box">
+                {" "}
+                {/* New box for domains */}
+                <ul className="subcategory-list">
+                  {category.industries.map((subcategory, index) => (
+                    <li key={index} className="subcategory-item">
+                      <Link
+                        to={`/${subcategory.industry
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")}`}
+                      >
+                        <button className="subcategory-button">
+                          {subcategory.industry}
+                        </button>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>
