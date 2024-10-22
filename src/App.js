@@ -9,22 +9,24 @@ import FileUploader from "./FileUploader";
 import "./App.css";
 import "font-awesome/css/font-awesome.min.css";
 
-// List of allowed email IDs
-const allowedEmails = [
-  "gocool94@gmail.com",
-  "gokul.k.v@kipi.ai",
-  "jason.small@kipi.bi",
-  "venkata.n.tata@kipi.ai",
-  "pradyut.k.mitra@kipi.ai",
-  "aman.j.mishra@kipi.ai",
-  "swati.a.dey@kipi.ai",
-  "priyata.p.solanki@kipi.ai",
-  "sharon.v.victor@kipi.ai",
-  "priyanka.s.kotikalapudi@kipi.ai",
-  "balaji.s.sundararajan@kipi.ai",
-  "shashank.c.mauli@kipi.ai",
-  "harivamsi.p.pullipudi@kipi.ai",
-  "addanotheremailhere",
+// List of allowed email IDs with their passwords
+const allowedUsers = [
+  { email: "gocool94@gmail.com", password: "kipi123" },
+  { email: "gokul.k.v@kipi.ai", password: "kipi123" },
+  { email: "jason.small@kipi.bi", password: "kipi123" },
+  { email: "venkata.n.tata@kipi.ai", password: "kipi123" },
+  { email: "pradyut.k.mitra@kipi.ai", password: "kipi123" },
+  { email: "aman.j.mishra@kipi.ai", password: "kipi123" },
+  { email: "swati.a.dey@kipi.ai", password: "kipi123" },
+  { email: "priyata.p.solanki@kipi.ai", password: "kipi123" },
+  { email: "sharon.v.victor@kipi.ai", password: "kipi123" },
+  { email: "priyanka.s.kotikalapudi@kipi.ai", password: "kipi123" },
+  { email: "balaji.s.sundararajan@kipi.ai", password: "kipi123" },
+  { email: "shashank.c.mauli@kipi.ai", password: "kipi123" },
+  { email: "harivamsi.p.pullipudi@kipi.ai", password: "kipi123" },
+  { email: "rakesh@kipi.ai", password: "kipiaipwd" },
+  { email: "babu@kipi.bi", password: "pwdkipiai" },
+  { email: "babu@kipi.ai", password: "pwdkipiai" },
 ];
 
 function App() {
@@ -37,7 +39,7 @@ function App() {
   useEffect(() => {
     const email = localStorage.getItem("user_email");
     const name = localStorage.getItem("user_name"); // Get the name from localStorage
-    if (email && allowedEmails.includes(email)) {
+    if (email && allowedUsers.find((user) => user.email === email)) {
       setUserEmail(email);
       setUserName(name); // Set the user's name
       setIsAuthenticated(true);
@@ -47,7 +49,10 @@ function App() {
   // Handle login form submission
   const handleLogin = (e) => {
     e.preventDefault();
-    if (allowedEmails.includes(userEmail) && password === "kipi123") {
+    const user = allowedUsers.find(
+      (user) => user.email === userEmail && user.password === password
+    );
+    if (user) {
       localStorage.setItem("user_email", userEmail); // Store email in localStorage
       localStorage.setItem("user_name", userName); // Store name in localStorage
       setIsAuthenticated(true);
