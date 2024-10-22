@@ -15,7 +15,9 @@ const Modal = ({ isOpen, onClose, content }) => {
     if (isOpen) {
       if (activeTab === "Use Cases" && classificationOptions.length > 0) {
         setSelectedClassification(classificationOptions[0]);
-        setSelectedUseCase(classificationOptions[0].usecases_collection[0] || null); // Select the first use case if available
+        setSelectedUseCase(
+          classificationOptions[0].usecases_collection[0] || null
+        ); // Select the first use case if available
       } else if (activeTab === "KPI's" && kpiOptions.length > 0) {
         setSelectedUseCase(kpiOptions[0]); // Select the first KPI by default
       }
@@ -54,7 +56,9 @@ const Modal = ({ isOpen, onClose, content }) => {
           </button>
           <button
             className={`flex-1 px-3 py-2 mx-2 rounded ${
-              activeTab === "Use Cases" ? "bg-green-500 text-white" : "bg-gray-300"
+              activeTab === "Use Cases"
+                ? "bg-green-500 text-white"
+                : "bg-gray-300"
             } text-sm transition`}
             onClick={() => setActiveTab("Use Cases")}
           >
@@ -76,7 +80,9 @@ const Modal = ({ isOpen, onClose, content }) => {
                     } text-sm transition`}
                     onClick={() => {
                       setSelectedClassification(classification);
-                      setSelectedUseCase(classification.usecases_collection[0] || null); // Select the first use case by default
+                      setSelectedUseCase(
+                        classification.usecases_collection[0] || null
+                      ); // Select the first use case by default
                     }}
                   >
                     {classification.classification}
@@ -87,19 +93,21 @@ const Modal = ({ isOpen, onClose, content }) => {
               {/* Render Use Cases for Selected Classification */}
               {selectedClassification && (
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {selectedClassification.usecases_collection.map((useCase, idx) => (
-                    <button
-                      key={idx}
-                      className={`px-4 py-2 rounded ${
-                        selectedUseCase === useCase
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-300"
-                      } text-sm transition`}
-                      onClick={() => setSelectedUseCase(useCase)}
-                    >
-                      {useCase.name}
-                    </button>
-                  ))}
+                  {selectedClassification.usecases_collection.map(
+                    (useCase, idx) => (
+                      <button
+                        key={idx}
+                        className={`px-4 py-2 rounded ${
+                          selectedUseCase === useCase
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-300"
+                        } text-sm transition`}
+                        onClick={() => setSelectedUseCase(useCase)}
+                      >
+                        {useCase.name}
+                      </button>
+                    )
+                  )}
                 </div>
               )}
 
@@ -108,52 +116,87 @@ const Modal = ({ isOpen, onClose, content }) => {
                 <div className="mt-4 border border-gray-300 rounded-lg">
                   {/* Business Impact in a single row */}
                   <div className="grid grid-cols-1 p-4 border-b border-gray-300 bg-gray-50">
-                    <p className="font-semibold text-indigo-600">Business Impact:</p>
-                    <p className="text-gray-700">{selectedUseCase.business_impact || "No business impact available."}</p>
+                    <p className="font-semibold text-indigo-600">
+                      Business Impact:
+                    </p>
+                    <p className="text-gray-700">
+                      {selectedUseCase.business_impact ||
+                        "No business impact available."}
+                    </p>
                   </div>
                   {/* Definition and Description side-by-side */}
                   <div className="grid grid-cols-2 gap-4 p-4">
                     <div className="border-r border-gray-300 pr-4">
-                      <p className="font-semibold text-indigo-600">Definition:</p>
-                      <p className="text-gray-700">{selectedUseCase.definition || "No definition available."}</p>
+                      <p className="font-semibold text-indigo-600">
+                        Definition:
+                      </p>
+                      <p className="text-gray-700">
+                        {selectedUseCase.definition ||
+                          "No definition available."}
+                      </p>
                     </div>
                     <div className="pl-4">
-                      <p className="font-semibold text-indigo-600">Description:</p>
-                      <p className="text-gray-700">{selectedUseCase.description || "No description available."}</p>
+                      <p className="font-semibold text-indigo-600">
+                        Description:
+                      </p>
+                      <p className="text-gray-700">
+                        {selectedUseCase.description ||
+                          "No description available."}
+                      </p>
                     </div>
                   </div>
                 </div>
               )}
             </>
           ) : (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {kpiOptions.map((kpi, idx) => (
-                <button
-                  key={idx}
-                  className={`px-4 py-2 rounded ${
-                    selectedUseCase === kpi ? "bg-green-500 text-white" : "bg-gray-300"
-                  } text-sm transition`}
-                  onClick={() => setSelectedUseCase(kpi)}
-                >
-                  {kpi.kpi}
-                </button>
-              ))}
-            </div>
-          )}
+            <>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {kpiOptions.map((kpi, idx) => (
+                  <button
+                    key={idx}
+                    className={`px-4 py-2 rounded ${
+                      selectedUseCase === kpi
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-300"
+                    } text-sm transition`}
+                    onClick={() => setSelectedUseCase(kpi)}
+                  >
+                    {kpi.kpi}
+                  </button>
+                ))}
+              </div>
 
-          {/* Display selected KPI details */}
-          {selectedUseCase && activeTab === "KPI's" && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">{selectedUseCase.kpi}</h3>
-              <p>
-                <strong>Explanation:</strong>{" "}
-                {selectedUseCase.explanation || "No explanation available."}
-              </p>
-              <p>
-                <strong>Formula:</strong>{" "}
-                {selectedUseCase.formula || "No formula available."}
-              </p>
-            </div>
+              {/* Display selected KPI details in a structured layout */}
+              {selectedUseCase && activeTab === "KPI's" && (
+                <div className="mt-4 border border-gray-300 rounded-lg">
+                  {/* KPI Name as a single row */}
+                  <div className="grid grid-cols-1 p-4 border-b border-gray-300 bg-gray-50">
+                    <h3 className="text-lg font-semibold text-indigo-600">
+                      {selectedUseCase.kpi}
+                    </h3>
+                  </div>
+
+                  {/* Explanation and Formula in the same row */}
+                  <div className="grid grid-cols-2 gap-4 p-4">
+                    <div className="border-r border-gray-300 pr-4">
+                      <p className="font-semibold text-indigo-600">
+                        Explanation:
+                      </p>
+                      <p className="text-gray-700">
+                        {selectedUseCase.explanation ||
+                          "No explanation available."}
+                      </p>
+                    </div>
+                    <div className="pl-4">
+                      <p className="font-semibold text-indigo-600">Formula:</p>
+                      <p className="text-gray-700">
+                        {selectedUseCase.formula || "No formula available."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
