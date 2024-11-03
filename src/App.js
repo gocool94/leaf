@@ -27,6 +27,12 @@ const allowedUsers = [
   { email: "rakesh@kipi.ai", password: "kipiaipwd" },
   { email: "babu@kipi.bi", password: "pwdkipiai" },
   { email: "babu@kipi.ai", password: "pwdkipiai" },
+	{ email: "pratik.r.sawana@kipi.ai", password: "kipiai" },
+{ email: "abhinav.r.shivam@kipi.ai", password: "kipiai" },
+	{ email: "supriyo.s.dutta@kipi.ai", password: "kipiai" },
+	 { email: "shubham.d.bansal@kipi.ai", password: "kipiai" },
+	{ email: "vijaykumar.p.gite@kipi.ai", password: "kipiai" },
+
 ];
 
 function App() {
