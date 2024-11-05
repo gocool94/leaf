@@ -1,0 +1,68 @@
+[
+    {
+        "email": "venkata.n.tata@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": false
+    },
+    {
+        "email": "gokul.k.v@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": true,
+        "isEditor": false
+    },
+    {
+        "email": "pradyut.k.mitra@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": true
+    },
+    {
+        "email": "swati.a.dey@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": false
+    },
+    {
+        "email": "priyata.p.solanki@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": false
+    },
+    {
+        "email": "sharon.v.victor@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": true
+    },
+    {
+        "email": "priyanka.s.kotikalapudi@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": false
+    },
+    {
+        "email": "balaji.s.sundararajan@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": true,
+        "isEditor": false
+    },
+    {
+        "email": "shashank.c.mauli@kipi.ai",
+        "password": "kipi123",
+        "isAdmin": false,
+        "isEditor": true
+    },
+    {
+        "email": "rakesh@kipi.ai",
+        "password": "kipiaipwd",
+        "isAdmin": false,
+        "isEditor": false
+    },
+    {
+        "email": "babu@kipi.ai",
+        "password": "pwdkipiai",
+        "isAdmin": false,
+        "isEditor": true
+    }
+]

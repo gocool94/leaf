@@ -1,353 +1,81 @@
-from fastapi import FastAPI
-from typing import List, Dict
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
 import json
-from pathlib import Path
+import os
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Add CORSMiddleware
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Add your React app's origin here
+    allow_origins=["http://localhost:3000"],  # Allow the React app URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Data for the topics endpoint
-topics_data = [
-    {
-        "id": 1,
-        "name": "Financial Services",
-        "icon": "🏦",
-        "path": "/financial-services",
-    },
-    {
-        "id": 2,
-        "name": "Manufacturing",
-        "icon": "🏭",
-        "path": "/financial-services",
-    },
-    {
-        "id": 3,
-        "name": "Healthcare & Life Science",
-        "icon": "🧑‍⚕️",
-        "path": "/financial-services",
-    },
-    {
-        "id": 4,
-        "name": "Technology",
-        "icon": "💻",
-        "path": "/financial-services",
-    },
-    {
-        "id": 5,
-        "name": "Media & Entertainment",
-        "icon": "🎬",
-        "path": "/financial-services",
-    },
-    {
-        "id": 6,
-        "name": "Retail & CPG",
-        "icon": "🛒",
-        "path": "/financial-services",
-    },
-    {
-        "id": 7,
-        "name": "Professional Services & Consulting",
-        "icon": "💼",
-        "path": "/financial-services",
-    },
-]
+# Path to your JSON file
+USER_DATA_PATH = "D:\\Projects\\React-Websites\\leaf\\leaf\\public\\allowedUsers.json"
 
-# Data for the automobiles endpoint
-automobiles_data = [
-    {
-        "name": "Front Office",
-        "categories": [
-            {
-                "name": "Sales",
-                "topics": [
-                    {
-                        "topic": "Customer Acquisition",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Conversion Rate",
-                                        "definition": "The percentage of leads that become customers.",
-                                        "formula": "(Number of Customers / Number of Leads) * 100",
-                                    },
-                                    {
-                                        "name": "Cost Per Acquisition",
-                                        "definition": "The average cost to acquire a new customer.",
-                                        "formula": "Total Cost of Marketing / Number of New Customers",
-                                    },
-                                ],
-                            },
-                            {
-                                "KPI": "2",
-                                "usecases": [
-                                    {
-                                        "name": "Lead-to-Customer Ratio",
-                                        "definition": "Ratio of leads to actual customers.",
-                                        "formula": "Number of Customers / Number of Leads",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "topic": "Customer Onboarding",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Onboarding Completion Rate",
-                                        "definition": "Percentage of customers who complete the onboarding process.",
-                                        "formula": "(Number of Completed Onboardings / Number of New Customers) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Branch Operations",
-                "topics": [
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Ops",
-                "topics": [
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "name": "Middle Office",
-        "categories": [
-            {
-                "name": "Sales",
-                "topics": [
-                    {
-                        "topic": "Customer Acquisition",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Conversion Rate",
-                                        "definition": "The percentage of leads that become customers.",
-                                        "formula": "(Number of Customers / Number of Leads) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Branch Operations",
-                "topics": [
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Operations",
-                "topics": [
-                    {
-                        "topic": "Payments & Settlements",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Transaction Accuracy Rate",
-                                        "definition": "Percentage of transactions processed without errors.",
-                                        "formula": "(Number of Accurate Transactions / Total Number of Transactions) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "name": "Back Office",
-        "categories": [
-            {
-                "name": "Sales",
-                "topics": [
-                    {
-                        "topic": "Customer Acquisition",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Conversion Rate",
-                                        "definition": "The percentage of leads that become customers.",
-                                        "formula": "(Number of Customers / Number of Leads) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Sales",
-                "topics": [
-                    {
-                        "topic": "Customer Acquisition",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Conversion Rate",
-                                        "definition": "The percentage of leads that become customers.",
-                                        "formula": "(Number of Customers / Number of Leads) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Sales",
-                "topics": [
-                    {
-                        "topic": "Customer Acquisition",
-                        "KPIs": [
-                            {
-                                "KPI": "1",
-                                "usecases": [
-                                    {
-                                        "name": "Conversion Rate",
-                                        "definition": "The percentage of leads that become customers.",
-                                        "formula": "(Number of Customers / Number of Leads) * 100",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    },
-]
+# Data model for a user
+class User(BaseModel):
+    email: str
+    password: str
+    isAdmin: bool = False
+    isEditor: bool = False
 
-# /topics endpoint
-@app.get("/topics")
-def get_topics() -> List[Dict]:
-    return topics_data
+# Load users from JSON file
+def load_users():
+    if not os.path.exists(USER_DATA_PATH):
+        return []
+    with open(USER_DATA_PATH, "r") as file:
+        return json.load(file)
 
-# /automobiles endpoint
-@app.get("/data")
-def get_automobiles() -> List[Dict]:
-    return automobiles_data
+# Save users to JSON file
+def save_users(users):
+    with open(USER_DATA_PATH, "w") as file:
+        json.dump(users, file, indent=4)
 
-@app.get("/nested")
-def get_nested() -> Dict:
-    file_path = Path(__file__).parent / 'kpi_output.json'
-    with file_path.open() as file:
-        data = json.load(file)
-    return data
+# GET endpoint to fetch all users
+@app.get("/users", response_model=List[User])
+def get_users():
+    return load_users()
+
+# POST endpoint to add a new user
+@app.post("/addUser", response_model=User)
+def add_user(new_user: User):
+    users = load_users()
+    # Check if the user already exists
+    if any(user["email"] == new_user.email for user in users):
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    users.append(new_user.dict())  # Add the new user to the list
+    save_users(users)  # Save the updated user list
+    return new_user  # Return the added user
+
+# POST endpoint to update the user list
+@app.post("/updateUsers")
+def update_users(updated_users: List[User]):
+    try:
+        save_users([user.dict() for user in updated_users])
+        return {"message": "User list updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# DELETE endpoint to remove a user by email
+@app.delete("/deleteUser/{email}")
+def delete_user(email: str):
+    users = load_users()
+    user_exists = any(user["email"] == email for user in users)
+
+    if not user_exists:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Remove user with matching email
+    updated_users = [user for user in users if user["email"] != email]
+    
+    # Save updated user list
+    save_users(updated_users)
+    return {"message": f"User with email {email} deleted successfully"}

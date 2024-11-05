@@ -1,86 +1,72 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopicsList from "./TopicsList";
 import RetailBankingDetail from "./RetailBankingDetail";
 import Header from "./Header";
 import SearchResults from "./SearchResults";
 import FileUploader from "./FileUploader";
+import AdminPanel from "./AdminPanel";
+import EditorPanel from "./EditorPanel";
 import "./App.css";
-import "font-awesome/css/font-awesome.min.css";
-
-// List of allowed email IDs with their passwords
-const allowedUsers = [
-  { email: "gocool94@gmail.com", password: "kipi123" },
-  { email: "gokul.k.v@kipi.ai", password: "kipi123" },
-  { email: "jason.small@kipi.bi", password: "kipi123" },
-  { email: "venkata.n.tata@kipi.ai", password: "kipi123" },
-  { email: "pradyut.k.mitra@kipi.ai", password: "kipi123" },
-  { email: "aman.j.mishra@kipi.ai", password: "kipi123" },
-  { email: "swati.a.dey@kipi.ai", password: "kipi123" },
-  { email: "priyata.p.solanki@kipi.ai", password: "kipi123" },
-  { email: "sharon.v.victor@kipi.ai", password: "kipi123" },
-  { email: "priyanka.s.kotikalapudi@kipi.ai", password: "kipi123" },
-  { email: "balaji.s.sundararajan@kipi.ai", password: "kipi123" },
-  { email: "shashank.c.mauli@kipi.ai", password: "kipi123" },
-  { email: "harivamsi.p.pullipudi@kipi.ai", password: "kipi123" },
-  { email: "rakesh@kipi.ai", password: "kipiaipwd" },
-  { email: "babu@kipi.bi", password: "pwdkipiai" },
-  { email: "babu@kipi.ai", password: "pwdkipiai" },
-	{ email: "pratik.r.sawana@kipi.ai", password: "kipiai" },
-{ email: "abhinav.r.shivam@kipi.ai", password: "kipiai" },
-	{ email: "supriyo.s.dutta@kipi.ai", password: "kipiai" },
-	 { email: "shubham.d.bansal@kipi.ai", password: "kipiai" },
-	{ email: "vijaykumar.p.gite@kipi.ai", password: "kipiai" },
-
-];
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState(""); // State for the user's name
-  const [password, setPassword] = useState(""); // State for the password
-  const [loginError, setLoginError] = useState(""); // State for login error messages
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [allowedUsers, setAllowedUsers] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
+
+  useEffect(() => {
+    // Fetch allowed users from JSON
+    fetch("/allowedUsers.json")
+      .then((response) => response.json())
+      .then((data) => setAllowedUsers(data))
+      .catch((error) => console.error("Error loading user data:", error));
+  }, []);
 
   useEffect(() => {
     const email = localStorage.getItem("user_email");
-    const name = localStorage.getItem("user_name"); // Get the name from localStorage
-    if (email && allowedUsers.find((user) => user.email === email)) {
-      setUserEmail(email);
-      setUserName(name); // Set the user's name
-      setIsAuthenticated(true);
+    const name = localStorage.getItem("user_name");
+    if (email) {
+      const user = allowedUsers.find((user) => user.email === email);
+      if (user) {
+        setUserEmail(email);
+        setUserName(name);
+        setIsAuthenticated(true);
+        setIsAdmin(user.isAdmin);
+        setIsEditor(user.isEditor);
+      }
     }
-  }, []);
+  }, [allowedUsers]);
 
-  // Handle login form submission
   const handleLogin = (e) => {
     e.preventDefault();
     const user = allowedUsers.find(
       (user) => user.email === userEmail && user.password === password
     );
     if (user) {
-      localStorage.setItem("user_email", userEmail); // Store email in localStorage
-      localStorage.setItem("user_name", userName); // Store name in localStorage
+      localStorage.setItem("user_email", userEmail);
+      localStorage.setItem("user_name", userName);
       setIsAuthenticated(true);
-      setLoginError(""); // Clear any previous errors
+      setIsAdmin(user.isAdmin);
+      setIsEditor(user.isEditor);
+      setLoginError("");
     } else {
       setLoginError("Invalid email or password");
     }
   };
 
-  const handleEmailChange = (e) => {
-    setUserEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const handleEmailChange = (e) => setUserEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
 
   return (
     <Router>
       <div className="app">
-        {isAuthenticated && <Header userName={userName} />}{" "}
-        {/* Pass userName to Header */}
+        {isAuthenticated && <Header userName={userName} />}
         <div className="app-container">
           {isAuthenticated ? (
             <Routes>
@@ -88,6 +74,10 @@ function App() {
               <Route path="/search" element={<SearchResults />} />
               <Route path="/upload" element={<FileUploader />} />
               <Route path="/:industry" element={<RetailBankingDetail />} />
+              {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
+              {isEditor && <Route path="/editor" element={<EditorPanel />} />}
+              {!isAdmin && <Route path="/admin" element={<Navigate to="/" />} />}
+              {!isEditor && <Route path="/editor" element={<Navigate to="/" />} />}
             </Routes>
           ) : (
             <div className="login-page">
