@@ -64,5 +64,11 @@
         "password": "pwdkipiai",
         "isAdmin": false,
         "isEditor": true
+    },
+    {
+        "email": "admin.admin@domain.com",
+        "password": "password",
+        "isAdmin": false,
+        "isEditor": true
     }
 ]

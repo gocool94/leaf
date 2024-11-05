@@ -90,6 +90,12 @@ function AdminPanel() {
       {/* Render Active Section */}
       {activeSection === "userManagement" && (
         <div className="section-container">
+          <button 
+            className="button add-user-button" 
+            onClick={() => setShowAddUserModal(true)} // Open modal
+          >
+            Add User
+          </button>
           <div className="user-section">
             <h2>Admins</h2>
             <ul className="user-list">
